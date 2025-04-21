@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EduBot Home</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Removed animate.css link since transitions are no longer needed -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .green-gradient {
+            background:  #16a34a;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        .glass-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        .feature-card {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        body {
+            background-color: #f7f8fa;
+        }
+        .welcome-section {
+            background-color: #139c45;
+            padding: 3rem 0;
+            margin-top: 4rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: -1rem;
+        }
+        .text-green-600 {
+            color: #16a34a;
+        }
+        .text-green-800 {
+            color: #15803d;
+        }
+        .hover-bg-green-50:hover {
+            background-color: #f0fdf4;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative">
+    <!-- Navigation -->
+    <nav class="green-gradient shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/home" class="text-white text-2xl font-bold">
+                        <i class="fas fa-robot mr-2"></i>EduBot
+                    </a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/logout" class="bg-white text-green-600 px-6 py-2 rounded-full text-sm font-medium hover:bg-green-50 transform hover:scale-105 transition-all shadow-md">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section text-center">
+        <h1 class="text-4xl font-bold text-white mb-4">Welcome to EduBot</h1>
+        <p class="text-xl text-white opacity-90">Choose an option to get started</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+            <!-- Chat Box -->
+            <div class="glass-effect feature-card rounded-xl p-8 text-center">
+                <i class="fas fa-comments text-green-600 text-5xl mb-6"></i>
+                <h3 class="text-2xl font-bold text-green-800 mb-4">Chat</h3>
+                <p class="text-green-600 mb-6">Talk and learn with the chatbot</p>
+                <a href="/chat" class="green-gradient text-white px-8 py-3 rounded-lg inline-block hover:opacity-90 transition-all transform hover:scale-105 shadow-md">
+                    Start Chatting
+                </a>
+            </div>
+
+            <!-- Links Box -->
+            <div class="glass-effect feature-card rounded-xl p-8 text-center">
+                <i class="fas fa-link text-green-600 text-5xl mb-6"></i>
+                <h3 class="text-2xl font-bold text-green-800 mb-4">Links</h3>
+                <p class="text-green-600 mb-6">Access important resources and educational materials</p>
+                <a href="/link" class="green-gradient text-white px-8 py-3 rounded-lg inline-block hover:opacity-90 transition-all transform hover:scale-105 shadow-md">
+                    Get Links
+                </a>
+            </div>
+
+            <!-- Video Box -->
+            <div class="glass-effect feature-card rounded-xl p-8 text-center">
+                <i class="fas fa-file-pdf text-green-600 text-5xl mb-6"></i>
+                <h3 class="text-2xl font-bold text-green-800 mb-4">Document</h3>
+                <p class="text-green-600 mb-6">Download and read the subject materials</p>
+                <a href="/videos" class="green-gradient text-white px-8 py-3 rounded-lg inline-block hover:opacity-90 transition-all transform hover:scale-105 shadow-md">
+                    View Pdfs
+                </a>
+            </div>
+            
+            <!-- PDF Summary Box -->
+            <div class="glass-effect feature-card rounded-xl p-8 text-center">
+                <i class="fas fa-file-upload text-green-600 text-5xl mb-6"></i>
+                <h3 class="text-2xl font-bold text-green-800 mb-4">PDF Summary</h3>
+                <p class="text-green-600 mb-6">Upload a PDF to get a concise 100-word summary</p>
+                <a href="/pdf_summary/" class="green-gradient text-white px-8 py-3 rounded-lg inline-block hover:opacity-90 transition-all transform hover:scale-105 shadow-md">
+                    Upload Pdfs
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

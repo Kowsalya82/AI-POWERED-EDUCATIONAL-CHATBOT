@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Educational Document Platform</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --primary-color: #16a34a;
+      --primary-dark: #15803d;
+      --text-light: #ffffff;
+      --text-dark: #1f2937;
+      --accent-color: #10b981;
+      --background-light: rgba(255, 255, 255, 0.95);
+      --danger: #dc2626;
+      --danger-hover: #b91c1c;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #ebebeb;
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+    nav {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    nav a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    nav a:hover {
+      opacity: 0.8;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 4rem);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      background: var(--background-light);
+      padding: 2rem;
+      border-radius: 16px;
+      color: var(--primary-color);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header h1 {
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    /* Grid of PDF Cards */
+    .pdf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .pdf-card {
+      background: var(--background-light);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s ease;
+    }
+    .pdf-card:hover {
+      transform: translateY(-2px);
+    }
+    .pdf-thumbnail {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      object-fit: cover;
+    }
+    .pdf-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .pdf-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .download-btn,
+    .delete-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    .download-btn {
+      background: var(--accent-color);
+      color: var(--text-light);
+      text-decoration: none;
+    }
+    .download-btn:hover {
+      opacity: 0.8;
+    }
+    .delete-btn {
+      background: var(--danger);
+      color: var(--text-light);
+    }
+    .delete-btn:hover {
+      background: var(--danger-hover);
+    }
+    .upload-section {
+      background: var(--background-light);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+    .upload-section h2 {
+      margin-bottom: 1.5rem;
+      color: var(--text-dark);
+      font-size: 1.25rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+    .pdf-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 180px; /* Matches the thumbnail size */
+  background-color: rgba(22, 163, 74, 0.1);
+  border-radius: 8px;
+  font-size: 5rem;
+  color: #dc2626; /* Red PDF icon color */
+}
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid rgba(22,163,74,0.3);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.2);
+    }
+    .button {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: var(--text-light);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(22,163,74,0.3);
+    }
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      nav a {
+        font-size: 12px;
+      }
+      .container {
+        padding: 0 1rem;
+      }
+      .pdf-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .pdf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Smaller cards */
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.pdf-card {
+  background: #ffffff; /* White background for clarity */
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pdf-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.pdf-thumbnail {
+    width: 100%;
+    height: 140px; /* Or your desired height */
+    border-radius: 8px;
+    margin-bottom: 0.8rem;
+    object-fit: contain; /* Or 'cover' depending on your preference */
+}
+
+.pdf-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 140px; /* Or your desired height */
+    background-color: rgba(22, 163, 74, 0.1);
+    border-radius: 8px;
+    font-size: 3rem;
+    color: #dc2626;
+}
+
+.pdf-placeholder i.fas.fa-file-pdf{
+    object-fit: contain;
+}
+
+/* Fallback PDF icon box */
+
+
+/* Title */
+.pdf-title {
+  font-size: 0.9rem; /* Reduced font size */
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Action buttons */
+.pdf-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.download-btn,
+.delete-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.3s ease;
+}
+
+.download-btn {
+  background: var(--accent-color);
+  color: var(--text-light);
+}
+
+.download-btn:hover {
+  opacity: 0.85;
+}
+
+.delete-btn {
+  background: var(--danger);
+  color: var(--text-light);
+}
+
+.delete-btn:hover {
+  background: var(--danger-hover);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .pdf-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  .pdf-thumbnail, .pdf-placeholder {
+    height: 120px;
+  }
+  .pdf-title {
+    font-size: 0.8rem;
+  }
+  .download-btn, .delete-btn {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/home/"><i class="fas fa-home"></i> Home</a>
+    <a href="/chat/"><i class="fas fa-history"></i> Chat</a>
+    <a href="/link/"><i class="fas fa-link"></i> Links</a>
+    <a href="/pdf_summary/"><i class="fas fa-upload"></i> Summary</a>
+    <a href="/logout/"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-graduation-cap"></i> Educational Document Platform</h1>
+      <p>Access your course materials and lectures</p>
+    </div>
+
+  <!-- Grid of existing PDF "cards" -->
+<div class="pdf-grid">
+  {% for pdf in pdfs %}
+  <div class="pdf-card">
+    <!-- Display the PDF Thumbnail if available -->
+    {% if pdf.thumb_url %}
+      <img class="pdf-thumbnail" src="{{ pdf.thumb_url }}" alt="PDF Thumbnail" />
+    {% else %}
+      <!-- Fallback: Show PDF Icon if thumbnail is missing -->
+      <div class="pdf-placeholder">
+        <i class="fas fa-file-pdf"></i>
+      </div>
+    {% endif %}
+
+    <div class="pdf-title">{{ pdf.subject }}</div>
+    <div class="pdf-actions">
+      <!-- Download -->
+      <a href="{% url 'force_download' pdf.filename %}">
+        <button class="download-btn">
+          <i class="fas fa-download"></i> Download
+        </button>
+      </a>
+      <!-- Delete -->
+      <button class="delete-btn" onclick="deletePDF('{{ pdf.file_path }}')">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+
+    <!-- Upload form -->
+    <div class="upload-section">
+      <h2>Upload New Document</h2>
+      <form id="uploadForm" onsubmit="handleUpload(event)" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="subject">Document Title</label>
+          <input
+            type="text"
+            id="subject"
+            name="subject"
+            required
+            placeholder="Enter document title"
+          />
+        </div>
+        <div class="form-group">
+          <label for="pdf_file">PDF File</label>
+          <input
+            type="file"
+            id="pdf_file"
+            name="pdf_file"
+            accept="application/pdf"
+            required
+          />
+        </div>
+        <button type="submit" class="button">
+          <i class="fas fa-upload"></i> Upload Document
+        </button>
+      </form>
+    </div>
+  </div>
+  <script>
+    async function handleUpload(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      try {
+        const response = await fetch('{% url "videos" %}', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+        });
+        const data = await response.json();
+        if (data.status === 'success') {
+          location.reload();
+        } else {
+          alert('Upload failed: ' + (data.message || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Upload error: ' + error.message);
+      }
+    }
+
+    async function deletePDF(filePath) {
+      if (!confirm('Are you sure you want to delete this document?')) {
+        return;
+      }
+      try {
+        const response = await fetch('{% url "videos" %}', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: JSON.stringify({ file_path: filePath })
+        });
+        if (response.ok) {
+          location.reload();
+        } else {
+          const data = await response.json();
+          alert('Delete failed: ' + (data.message || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Delete error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EduBot Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Green gradient for navbar and buttons */
+        .green-gradient {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        }
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        /* Modified login box style to enhance contrast */
+        .login-box {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+        }
+        .form-input {
+            background: rgba(250, 250, 250, 1);
+            border: 1px solid #d1d5db;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 0 2px rgba(22,163,74,0.2);
+        }
+        /* Plain background */
+        body {
+            background-color: #f7f8fa;
+            font-family: 'Noto Sans', sans-serif;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative">
+    <!-- Navigation Bar -->
+    <nav class="green-gradient shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-white text-2xl font-bold animate__animated animate__fadeIn">
+                        <i class="fas fa-robot mr-2"></i>EduBot
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/register" class="bg-white text-green-600 px-6 py-2 rounded-full text-sm font-medium hover:bg-green-50 transform hover:scale-105 transition-all">
+                        <i class="fas fa-user-plus mr-2"></i>Register
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-md mx-auto login-box animate__animated animate__fadeIn">
+            <h2 class="text-3xl font-bold text-green-800 mb-8 text-center">Login</h2>
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label class="block text-green-800 mb-2">Email</label>
+                    <input type="email" name="email" required 
+                           class="form-input w-full px-4 py-3 rounded-lg" 
+                           placeholder="Enter your email">
+                </div>
+                <div>
+                    <label class="block text-green-800 mb-2">Password</label>
+                    <input type="password" name="password" required 
+                           class="form-input w-full px-4 py-3 rounded-lg" 
+                           placeholder="Enter your password">
+                </div>
+                <button type="submit" 
+                        class="w-full green-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition-all transform hover:scale-105">
+                    Login
+                </button>
+            </form>
+            <p class="mt-6 text-center text-green-800">
+                Don't have an account? 
+                <a href="/register" class="font-medium text-green-600 hover:underline">Register here</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload PDF for Summary - EduConnect</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f7f8fa;
+      font-family: 'Noto Sans', sans-serif;
+      min-height: 100vh;
+    }
+    /* Pinned Navigation Bar */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 50;
+      /* Green gradient from #16a34a to #15803d */
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    nav .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: left;
+    }
+    /* Navigation links: make them white for contrast */
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 3rem;
+    }
+    nav a:hover {
+      transform: translateY(-2px);
+    }
+    /* Main Content Container */
+    .main-container {
+      margin-top: 80px; /* To avoid overlap with fixed nav */
+      max-width: 700px;
+      width: 95%;
+      background: #fff;
+      padding: 40px 50px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      border: 3px solid transparent;
+      background-clip: padding-box, border-box;
+      /* Animate border from #16a34a to #15803d */
+      background-image: linear-gradient(#fff, #fff),
+                        linear-gradient(135deg, #16a34a, #15803d);
+      background-origin: border-box;
+      background-size: 100% 100%, 100% 100%;
+      animation: gradientBorder 5s ease infinite;
+    }
+    @keyframes gradientBorder {
+      0% {
+        background-image: linear-gradient(#fff, #fff),
+                          linear-gradient(135deg, #16a34a, #15803d);
+      }
+      50% {
+        background-image: linear-gradient(#fff, #fff),
+                          linear-gradient(135deg, #15803d, #16a34a);
+      }
+      100% {
+        background-image: linear-gradient(#fff, #fff),
+                          linear-gradient(135deg, #16a34a, #15803d);
+      }
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    /* Upload Form Styling */
+    .upload-form input[type="file"] {
+      margin: 10px 0;
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      transition: box-shadow 0.3s ease;
+    }
+    .upload-form input[type="file"]:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(22,163,74,0.3);
+    }
+    .upload-form button {
+      padding: 12px 25px;
+      /* Green gradient for button */
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .upload-form button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    /* Summary and Error Boxes */
+    .summary-box {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      min-height: 150px;
+      white-space: pre-wrap;
+      color: #333;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .error {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(220,38,38,0.1);
+      border-left: 4px solid #dc2626;
+      border-radius: 5px;
+      color: #dc2626;
+      font-size: 16px;
+    }
+    /* Logout Button (optional style) */
+    nav .container div:last-child a {
+      background-color: #fff;
+      color: #16a34a;
+      border: 2px solid #16a34a;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    nav .container div:last-child a:hover {
+      background-color: #16a34a;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="container">
+      <div>
+        <a href="/home/"><i class="fas fa-home"></i> Home</a>
+        <a href="/chat/"><i class="fas fa-history"></i> Chat</a>
+        <a href="/link/"><i class="fas fa-link"></i> Links</a>
+        <a href="/videos/"><i class="fas fa-file-pdf"></i> Documents</a>
+        
+      </div>
+      <div>
+        <!-- Logout button is styled above to be white border with green text -->
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="main-container">
+    <h1>Upload PDF for Summary</h1>
+    <div class="upload-form">
+      <form id="pdfForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required>
+        <br>
+        <button type="submit">Upload and Summarize</button>
+      </form>
+    </div>
+    <div id="summaryBox" class="summary-box" style="display: none;"></div>
+    <div id="errorBox" class="error" style="display: none;"></div>
+  </div>
+
+  <script>
+    document.getElementById('pdfForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      
+      // Clear previous summary or error messages
+      const summaryBox = document.getElementById('summaryBox');
+      const errorBox = document.getElementById('errorBox');
+      summaryBox.style.display = 'none';
+      errorBox.style.display = 'none';
+      
+      fetch('/pdf_summary/', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.summary) {
+          summaryBox.textContent = data.summary;
+          summaryBox.style.display = 'block';
+        } else if (data.error) {
+          errorBox.textContent = data.error;
+          errorBox.style.display = 'block';
+        }
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        errorBox.textContent = 'An error occurred while uploading the PDF.';
+        errorBox.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

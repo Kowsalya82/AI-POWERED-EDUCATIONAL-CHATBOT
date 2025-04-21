@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Educational Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+       /* Base reset and defaults */
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
+       html, body {
+           height: 100%;
+       }
+       body {
+           background-color: #f7f8fa;
+           font-family: 'Noto Sans', sans-serif;
+           font-size: 16px;
+           color: #1f2937;
+           display: flex;
+           flex-direction: column;
+           margin: 0;
+       }
+       /* Fixed nav bar */
+       nav {
+           position: fixed;
+           top: 0;
+           left: 0;
+           width: 100%;
+           z-index: 9999;
+           background: #16a34a;
+           padding: 1rem;
+           box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+       }
+       nav a {
+           color: #ffffff;
+           text-decoration: none;
+           margin: 0 20px;
+           font-size: 14px;
+           font-weight: 500;
+           transition: all 0.3s ease;
+           position: relative;
+       }
+       nav a:hover {
+           transform: translateY(-2px);
+       }
+       nav a::after {
+           content: '';
+           position: absolute;
+           width: 0;
+           height: 2px;
+           bottom: -4px;
+           left: 0;
+           background-color: #ffffff;
+           transition: width 0.3s ease;
+       }
+       nav a:hover::after {
+           width: 100%;
+       }
+       /* Main Container */
+       .container {
+           width: 90%;
+           max-width: 1200px;
+           margin: 80px auto 20px;
+           padding: 20px;
+           background-color: #ffffff;
+           border-radius: 12px;
+           box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+           display: flex;
+           flex-direction: column;
+           height: calc(100vh - 120px);
+       }
+       /* Conversation Container */
+       .conversation {
+           flex: 1;
+           overflow-y: auto;
+           background: #fafafa;
+           border-radius: 12px;
+           padding: 20px;
+           margin-bottom: 20px;
+           scroll-behavior: smooth;
+           box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+       }
+       .message {
+           margin-bottom: 15px;
+           padding: 10px 15px;
+           border-radius: 15px;
+           line-height: 1.4;
+       }
+       .message.user {
+           background-color: #22c55e;
+           color: #ffffff;
+           display: inline-block; /* width adjusts to content */
+           min-width: 50px;
+           margin-left: auto;
+           text-align: right;
+           box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+       }
+       .message.bot {
+           background-color: #f3f4f6;
+           color: #1f2937;
+           margin-right: auto;
+           text-align: left;
+           box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+           max-width: 99%; /* Prevents text from stretching across the entire box */
+           word-wrap: break-word; /* Breaks long words */
+           overflow-wrap: break-word; /* Ensures wrapping of long words */
+           white-space: pre-wrap; /* Maintains spacing while wrapping long lines */
+       }
+       /* Loading Indicator */
+       .loading {
+           display: flex;
+           align-items: center;
+           gap: 10px;
+           margin: 10px 0;
+       }
+       .loading i {
+           font-size: 18px;
+           animation: spin 1s linear infinite;
+       }
+       @keyframes spin {
+           0% { transform: rotate(0deg); }
+           100% { transform: rotate(360deg); }
+       }
+       /* Sticky input area */
+       .input-area {
+           border-top: 1px solid #e5e7eb;
+           padding: 10px 0;
+       }
+       /* Chat bar */
+       .chat-bar {
+           display: flex;
+           align-items: center;
+       }
+       .chat-input {
+           flex: 1;
+           border: 1px solid #d1d5db;
+           border-radius: 8px;
+           padding: 10px;
+           font-family: 'Noto Sans', sans-serif;
+           font-size: 15px;
+           resize: none;
+           overflow: hidden;
+           box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+       }
+       .chat-submit {
+           border: none;
+           border-radius: 8px;
+           padding: 10px 20px;
+           background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+           color: #ffffff;
+           cursor: pointer;
+           font-size: 15px;
+           box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+       }
+       .chat-submit:hover {
+           opacity: 0.9;
+           transform: translateY(-1px);
+           box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+       }
+       /* Error message styling */
+       .error {
+           color: #dc2626;
+           margin: 10px 0;
+           font-size: 14px;
+           padding: 10px;
+           background-color: rgba(220,38,38,0.1);
+           border-radius: 8px;
+           border-left: 4px solid #dc2626;
+           box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+       }
+       /* Dark Theme for Chatbot */
+.dark-theme-chat {
+    background-color: #121826 !important; /* Dark background for better contrast */
+    color: #f8fafc !important; /* Brighter text for readability */
+}
+
+.dark-theme-chat .conversation {
+    background: #1e293b !important; /* Slightly lighter dark shade */
+}
+
+.dark-theme-chat .message.bot {
+    background-color: #334155 !important; /* Dark grayish blue */
+    color: #f8fafc !important;
+}
+
+.dark-theme-chat .message.user {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+}
+
+.dark-theme-input {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+    border: 1px solid #64748b !important; /* Subtle border */
+}
+
+.dark-theme-input::placeholder {
+    color: #cbd5e1 !important; /* Brighter gray placeholder */
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #f8fafc;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    color: #e2e8f0;
+}
+    </style>
+</head>
+<body>
+     
+    <!-- Fixed Navigation -->
+    <nav>
+        <a href="/home/"><i class="fas fa-home"></i> Home</a>
+        <a href="/link/"><i class="fas fa-link"></i> Links</a>
+        <a href="/videos/"><i class="fas fa-file-pdf"></i> Documents</a>
+        <a href="/pdf_summary/"><i class="fas fa-upload"></i> Summary</a>
+        <a href="/logout/"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+
+    <form method="post">
+        {% csrf_token %}
+    </form>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Conversation Container -->
+        <div class="conversation" id="conversation">
+            {% for entry in history %}
+            
+            <div class="message user" id="user-msg-{{ entry.id }}">
+                 <p>{{ entry.query }}</p>
+            </div>
+            <div class="message bot" id="bot-msg-{{ entry.id }}">
+                  <p>{{ entry.response|linebreaksbr|safe }}</p>
+            </div> 
+            {% endfor %}
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <form method="post" id="chatForm">
+                {% csrf_token %}
+                <div class="chat-bar">
+                    <textarea
+                        id="query"
+                        name="query"
+                        class="chat-input"
+                        placeholder="Enter your educational query..."
+                        required
+                        oninput="autoResize(this)"
+                    ></textarea>
+                    <button type="submit" class="chat-submit">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        // Function to scroll the conversation container to the bottom
+        function scrollToBottom() {
+            const conversation = document.getElementById('conversation');
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+        
+        // On initial page load, point to the bottom without animating scroll
+        window.onload = function() {
+            const conversation = document.getElementById('conversation');
+            conversation.scrollTop = conversation.scrollHeight;
+        };
+
+        // Auto-resize the textarea to match its content
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        // Retrieve the CSRF token from the hidden input rendered by Django
+        function getCSRFToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+
+        // Submit chat form via AJAX
+        document.getElementById('chatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const queryField = document.getElementById('query');
+            const queryText = queryField.value.trim();
+            if (!queryText) return;
+            
+            const conversation = document.getElementById('conversation');
+            
+            // Append user's message immediately
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.style.display = 'inline-block';
+            userMsg.style.minWidth = 'fit-content';
+            userMsg.innerHTML = `<p>${queryText}</p>`;
+            conversation.appendChild(userMsg);
+            scrollToBottom();
+            
+            // Clear the input field immediately
+            document.getElementById('chatForm').reset();
+            autoResize(queryField);
+            
+            // Append loading indicator
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.className = 'loading';
+            loadingIndicator.innerHTML = `<i class="fas fa-spinner"></i><span>Loading...</span>`;
+            conversation.appendChild(loadingIndicator);
+            scrollToBottom();
+            
+            // Prepare form data for AJAX call
+            const formData = new FormData();
+            formData.append('query', queryText);
+            
+            // Send the query to the backend including the CSRF token in the header
+            fetch('/chat/', {
+    method: 'POST',
+    body: formData,
+    headers: {
+        'X-CSRFToken': getCSRFToken(),
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+    }
+})
+
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Remove loading indicator
+                conversation.removeChild(loadingIndicator);
+                // Append the bot response when received
+                const botMsg = document.createElement('div');
+                botMsg.className = 'message bot';
+                const formattedResponse = data.bot_response.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+                const p = document.createElement('p');
+                p.innerHTML = formattedResponse;
+                botMsg.appendChild(p);
+                conversation.appendChild(botMsg);
+                scrollToBottom();
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                conversation.removeChild(loadingIndicator);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = 'An error occurred while processing your query: ' + err.message;
+                conversation.appendChild(errorDiv);
+                scrollToBottom();
+            });
+        });
+         // Function to toggle theme
+function toggleTheme() {
+    const body = document.body;
+    const chatContainer = document.querySelector('.container');
+    const conversation = document.querySelector('.conversation');
+    const chatInput = document.querySelector('.chat-input');
+    const currentTheme = localStorage.getItem('theme');
+    
+    if (currentTheme === 'dark') {
+        body.classList.remove('dark-theme');
+        chatContainer.classList.remove('dark-theme-chat');
+        conversation.classList.remove('dark-theme-chat');
+        chatInput.classList.remove('dark-theme-input');
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.classList.add('dark-theme');
+        chatContainer.classList.add('dark-theme-chat');
+        conversation.classList.add('dark-theme-chat');
+        chatInput.classList.add('dark-theme-input');
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Apply theme on page load
+window.onload = function() {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.querySelector('.container').classList.add('dark-theme-chat');
+        document.querySelector('.conversation').classList.add('dark-theme-chat');
+        document.querySelector('.chat-input').classList.add('dark-theme-input');
+    }
+};
+
+// Create theme toggle button
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.querySelector('nav');
+    const toggleButton = document.createElement('button');
+    toggleButton.innerHTML = '<i class="fas fa-adjust"></i>';
+    toggleButton.classList.add('theme-toggle');
+    toggleButton.onclick = toggleTheme;
+    nav.appendChild(toggleButton);
+});
+
+    </script>
+</body>
+</html>
