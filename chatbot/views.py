@@ -29,7 +29,7 @@ HISTORY_PATH = os.path.join(settings.BASE_DIR, 'history.xlsx')
 HISTORY_DB_PATH = os.path.join(settings.BASE_DIR, 'history.db')
 UPLOADS_DB_PATH = os.path.join(settings.BASE_DIR, 'uploads.db')
 
-GEMINI_API_KEY = "AIzaSyDDm4r9JfPcKL9nlje2Tu-65ghQNrpUNrE"
+GEMINI_API_KEY = "paste your api key"
 genai.configure(api_key=GEMINI_API_KEY)
 
 generation_config = {
